@@ -6,6 +6,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tokenCount = document.getElementById('token-count');
     const loadingOverlay = document.getElementById('loading-overlay');
     const clearBtn = document.getElementById('clear-btn');
+    const sampleBtn = document.getElementById('sample-btn');
+
+    const sampleTexts = [
+        "Exploring the vast universe, one small step at a time.",
+        "The silent night was broken by a sudden, loud thunder.",
+        "She quickly typed the complex code into the terminal.",
+        "A gentle breeze whispered through the ancient oak trees.",
+        "Mountains stood tall against the vibrant sunset sky.",
+        "He sipped his hot coffee while watching the morning rain.",
+        "The clever fox outsmarted the hounds with a quick dash.",
+        "Robots are learning to perform intricate surgical tasks.",
+        "Music has the power to heal the soul and uplift spirits.",
+        "A mysterious shadow moved gracefully across the dark alley.",
+        "The old clock chimed exactly at midnight, echoing loudly.",
+        "They discovered a hidden treasure buried beneath the sand.",
+        "The sparkling stars guided the lost sailors back home.",
+        "Reading a good book can transport you to another world.",
+        "Freshly baked bread filled the room with a delightful aroma."
+    ];
 
     // Initialize Tokenizer
     const tokenizer = new window.Tokenizer();
@@ -36,6 +55,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         textInput.value = '';
         updateVisualization();
         textInput.focus();
+    });
+
+    sampleBtn.addEventListener('click', () => {
+        const randomIndex = Math.floor(Math.random() * sampleTexts.length);
+        textInput.value = sampleTexts[randomIndex];
+        updateVisualization();
     });
 
     function updateVisualization() {
