@@ -7,23 +7,58 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loadingOverlay = document.getElementById('loading-overlay');
     const clearBtn = document.getElementById('clear-btn');
     const sampleBtn = document.getElementById('sample-btn');
+    const tokenListContainer = document.getElementById('token-list-container');
+    const resizer = document.getElementById('resizer');
+
+    let isResizing = false;
+    let lastDownY = 0;
+
+    resizer.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        lastDownY = e.clientY;
+        resizer.classList.add('resizing');
+        document.body.style.cursor = 'row-resize';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        
+        const deltaY = lastDownY - e.clientY;
+        lastDownY = e.clientY;
+        
+        const currentHeight = tokenListContainer.getBoundingClientRect().height;
+        let newHeight = currentHeight + deltaY;
+        
+        if (newHeight < 50) newHeight = 50;
+        if (newHeight > window.innerHeight * 0.7) newHeight = window.innerHeight * 0.7;
+        
+        tokenListContainer.style.height = `${newHeight}px`;
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isResizing) {
+            isResizing = false;
+            resizer.classList.remove('resizing');
+            document.body.style.cursor = '';
+        }
+    });
 
     const sampleTexts = [
-        "To tokenize or not to tokenize, that is the query.\n\nCost: $42.99!   Wait, a serendipitous bug? 🐛",
-        "Data chunk #090-B:\n    Initializing sequence...\nWarning: Variable 'X' undefined. \nProceed anyway? 🤔",
-        "The antidisestablishmentarianism movement began in 19th-century England.\n  (See page 45, line 2) 📖",
-        "Defenestration: the act of throwing someone out of a window.\n\nRate = 9.81m/s^2.   Don't try this! 🪟",
-        "var str = \"Hello\\nWorld\";\n   let sum = 0;\nfor(let i=0; i<100; i++) {\n  sum += i; // The result 🚀\n}",
-        "Order ID: 77-XYZ-9002.\n  Customer: Jane Doe.\nStatus: Pending clearance @ customs.\nETA: 24/11/2026 📦",
-        "The quintessential algorithm requires O(N log N) time complexity.\n\nCan we optimize the inner loop? 🧠",
-        "Password requirements:\n- 1 uppercase\n- 1 symbol (!@#$)\n- 12+ characters\n    Is \"P@ssw0rd\" safe? 🔒",
-        "A completely ubiquitous phenomenon!\n\nThe temperature dropped to -14.5°C in the isolated tundra. ❄️",
-        "Equation: f(x) = x^2 - 4x + 4.\nRoots at x = 2.\n  What happens if we integrate from 0 to infinity? 📈",
-        "Contact support@example.com for inquiries.\n\nTicket #55442 created.\n   Priority: HIGH. Over & out 📞",
-        "They ventured into the labyrinthine cave...\n\nFound 500 gold coins, 2 ancient relics & a potion. 🏺",
-        "SyntaxError: Unexpected token '<' at line 42.\n\n    Check your HTML tags! Did you miss a bracket? 💻",
-        "The cacophony of the city streets was overwhelming.\n\nDecibel level: ~85dB.\n   Need some quiet... 🎧",
-        "Ingredients:\n- 2.5 cups flour\n- 1 tsp salt\n- 3/4 cup warm water\n   Mix rigorously for 10 minutes. 🥖"
+        "In the heart of the bustling metropolis, a completely unprecedented phenomenon occurred at precisely 14:05 PM.\n\nTemperatures plummeted by -34.8°C!    The sheer juxtaposition left citizens flabbergasted. ❄️",
+        "Data synchronization initialized... [Buffer: 8092 bytes]\n\nWARNING: The ubiquitous firewall at 192.168.0.255 is rejecting packets from node ~X7.\n   Please restart the subterranean routing algorithm immediately to prevent catastrophic failure! 🛠️",
+        "Are you familiar with the concept of antidisestablishmentarianism? It's quite the mouthful!\n\nAccording to historical records from the 1800s, it involves intricate socio-political maneuvering.   (Page 45) 📚",
+        "Invoice #994-Alpha has been processed successfully.\n\nTotal amount due: $1,450.75 or €1,320.00.\n   We kindly request that you remit payment by 31/12/2026. Failure to comply will automatically result in a non-negotiable 5.5% late penalty fee. 💼",
+        "function calculateHypotenuse(a, b) {\n    // Pythagorean theorem: a^2 + b^2 = c^2\n    return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));\n}\n\nTesting with (3, 4)... Result is exactly 5.000!   This beautiful idiosyncratic logic fascinates me. 💻",
+        "The recipe calls for a rather unconventional approach:\n- 3.5 cups of refined flour\n- 1/4 tsp of Himalayan pink salt\n- 2 large eggs\n\n   Whisk vigorously for exactly 15 minutes until it becomes viscous! 🧑‍🍳",
+        "Defenestration—the act of throwing someone or something out of a window—is a peculiarly specific vocabulary word.\n\nImagine the chaotic velocity (v = 9.8m/s^2) of a 45kg object plummeting from the 12th floor!   Do not attempt this at home. 🪟",
+        "Passenger manifest for Flight DL-8409:\n  Name: Alexander Supertramp\n  Seat: 14B (Aisle)\n  Status: Checked-in\n\nPlease proceed to Gate C-42 immediately. A journey of 1,000 miles begins with a single step. ✈️",
+        "Did you know that the hexadecimal color code for pure cyan is #00FFFF?\n\nIt consists of 0% red, 100% green, and exactly 100% blue.   If you carefully mix it with magenta (#FF00FF), the resulting juxtaposition creates an entirely new spectrum! 🎨",
+        "System Diagnostics [Run #4002]:\nCPU Temp: 85°C (CRITICAL)\nRAM Usage: 15.8GB / 16.0GB\n\n   The monolithic architecture is experiencing memory leaks. Execute the \"kill -9\" command on process ID 8080 ASAP! 🚨",
+        "The philosophical debate surrounding existentialism often revolves around the inherent meaninglessness of the universe.\n\nIn 1943, Jean-Paul Sartre published 'Being and Nothingness'—an intricately woven 600-page tome exploring these concepts. 🤔",
+        "A cacophony of sirens interrupted the otherwise tranquil evening.\n\nDecibel meter readings spiked from ~40dB to an ear-splitting 115dB in mere seconds!    Emergency vehicles rushed towards 5th & Main. 🚑",
+        "Patient file #77-B:\nBlood pressure: 120/80 mmHg.\nHeart rate resting: 65 bpm.\nTemperature: 98.6°F.\n\n   The comprehensive electrocardiogram indicates absolutely zero abnormalities. We strongly recommend scheduling a follow-up check in 6 months. 🏥",
+        "Have you ever tried navigating the Byzantine bureaucracy of the local DMV?\n\nIt required bringing 3 forms of ID, waiting for 4.5 hours, and filling out Document 1099-B... only to be in the wrong queue! 🐢",
+        "Weather alert for zip code 90210:\nHeavy precipitation expected between 14:00 and 18:00.\nWind gusts reaching up to 45 mph (72 km/h).\n\n   We urgently advise all residents to secure loose outdoor items and avoid transcontinental travel entirely. ⛈️"
     ];
 
     // Initialize Tokenizer
