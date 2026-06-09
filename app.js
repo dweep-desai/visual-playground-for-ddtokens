@@ -9,21 +9,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sampleBtn = document.getElementById('sample-btn');
 
     const sampleTexts = [
-        "Hello world! 👋 Welcome to 2024.\nHere is a random number: 12345.\n    Let's see how this is tokenized!",
-        "User 909 says:\n\"This UI is 🔥!\"\nWhat do you think about adding 5 more emojis? 🤔 Let me know ASAP! ✨",
-        "Data block A7X:\nValue 1: $450.99\nValue 2: €120.00\n  --> Proceeding with transaction... 🚀 Success! 🎉",
-        "Line 1...\n\nLine 3 after a blank! 😲\nCan it handle 4 spaces?    Yes, it can. Numbers like 3.14159 too! 🥧",
-        "Error 404: Not Found 🚨\nPlease check the URL and try again. 🔄\nContact admin at 1-800-555-0199 for help.",
-        "Task List 📋:\n1. Buy 3 apples 🍎\n2. Call Mom at 5:00 PM 📞\n3. Walk the dog 🐕\n  Done with all 3 tasks!",
-        "Coordinates: 34.0522° N, 118.2437° W 📍\nLos Angeles, CA.\nPopulation: ~3.8 million 🏙️\nWeather: 72°F ☀️",
-        "Code snippet:\n```js\nconst x = 42; 🧑‍💻\nconsole.log(\"Result:\", x * 2);\n```\nDoes this run properly? 🤔",
-        "Flight BA249 ✈️ departs at 14:30.\nGate: 12B.\nPassenger: John Doe (ID: 987654321).\nHave a safe trip! 🌍",
-        "Recipe for 🥞:\n- 2 cups flour\n- 1 cup milk 🥛\n- 3 eggs 🥚\nMix well and cook at 350°F for 10 mins. Enjoy!",
-        "Invoice #77891 📄\nDate: 2026-06-09\nTotal: $1,250.50 💰\nStatus: PAID ✅\nThank you for your business! 🙏",
-        "Event: Team Sync 📅\nTime: 10:00 AM - 11:30 AM.\nLocation: Room 4B 🏢\nAttendees: 8 people.\nBring coffee ☕!",
-        "Temperature reads 98.6°F 🌡️.\nHeart rate: 72 bpm 💓.\nBlood pressure: 120/80.\nPatient is stable. 🏥👨‍⚕️",
-        "The quick brown fox 🦊 jumps over 13 lazy dogs 🐶!\nWhat a crazy sight at 2:45 PM on a Tuesday. 🤯✨",
-        "System Update ⚙️:\nVersion 10.4.2 installed.\nRestarting in 5... 4... 3... 2... 1... 💥\nSystem is UP! 🟢"
+        "To tokenize or not to tokenize, that is the query.\n\nCost: $42.99!   Wait, a serendipitous bug? 🐛",
+        "Data chunk #090-B:\n    Initializing sequence...\nWarning: Variable 'X' undefined. \nProceed anyway? 🤔",
+        "The antidisestablishmentarianism movement began in 19th-century England.\n  (See page 45, line 2) 📖",
+        "Defenestration: the act of throwing someone out of a window.\n\nRate = 9.81m/s^2.   Don't try this! 🪟",
+        "var str = \"Hello\\nWorld\";\n   let sum = 0;\nfor(let i=0; i<100; i++) {\n  sum += i; // The result 🚀\n}",
+        "Order ID: 77-XYZ-9002.\n  Customer: Jane Doe.\nStatus: Pending clearance @ customs.\nETA: 24/11/2026 📦",
+        "The quintessential algorithm requires O(N log N) time complexity.\n\nCan we optimize the inner loop? 🧠",
+        "Password requirements:\n- 1 uppercase\n- 1 symbol (!@#$)\n- 12+ characters\n    Is \"P@ssw0rd\" safe? 🔒",
+        "A completely ubiquitous phenomenon!\n\nThe temperature dropped to -14.5°C in the isolated tundra. ❄️",
+        "Equation: f(x) = x^2 - 4x + 4.\nRoots at x = 2.\n  What happens if we integrate from 0 to infinity? 📈",
+        "Contact support@example.com for inquiries.\n\nTicket #55442 created.\n   Priority: HIGH. Over & out 📞",
+        "They ventured into the labyrinthine cave...\n\nFound 500 gold coins, 2 ancient relics & a potion. 🏺",
+        "SyntaxError: Unexpected token '<' at line 42.\n\n    Check your HTML tags! Did you miss a bracket? 💻",
+        "The cacophony of the city streets was overwhelming.\n\nDecibel level: ~85dB.\n   Need some quiet... 🎧",
+        "Ingredients:\n- 2.5 cups flour\n- 1 tsp salt\n- 3/4 cup warm water\n   Mix rigorously for 10 minutes. 🥖"
     ];
 
     // Initialize Tokenizer
