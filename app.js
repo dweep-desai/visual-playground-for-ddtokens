@@ -1,3 +1,7 @@
+import { getEncoding } from 'https://cdn.jsdelivr.net/npm/js-tiktoken@1.0.12/+esm';
+import { env, AutoTokenizer } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/dist/transformers.min.js';
+env.allowLocalModels = false;
+
 document.addEventListener('DOMContentLoaded', async () => {
     const textInput = document.getElementById('text-input');
     const tokenViz = document.getElementById('token-visualization');
@@ -9,6 +13,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sampleBtn = document.getElementById('sample-btn');
     const tokenListContainer = document.getElementById('token-list-container');
     const resizer = document.getElementById('resizer');
+    const compareBtn = document.getElementById('compare-btn');
+    const compareDropdown = document.getElementById('compare-dropdown');
+    const comparisonContainer = document.getElementById('comparison-container');
+    const compareTitle = document.getElementById('compare-title');
+    const compareTokenCount = document.getElementById('compare-token-count');
+    const compareTokenViz = document.getElementById('compare-token-visualization');
+
+    let currentCompareValue = 'none';
+    const extraTokenizers = {};
 
     let isResizing = false;
     let lastDownY = 0;
@@ -98,6 +111,64 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateVisualization();
     });
 
+    compareBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        compareDropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', () => {
+        compareDropdown.classList.add('hidden');
+    });
+
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', async (e) => {
+            currentCompareValue = e.target.getAttribute('data-value');
+            const label = e.target.textContent;
+            
+            if (currentCompareValue === 'none') {
+                comparisonContainer.classList.add('hidden');
+                compareBtn.textContent = 'Compare ▼';
+                updateVisualization();
+                return;
+            }
+
+            compareBtn.textContent = `Comparing: ${label} ▼`;
+            comparisonContainer.classList.remove('hidden');
+            compareTitle.textContent = `Comparing with: ${label}`;
+
+            if (currentCompareValue === 'llama-3') {
+                if (!window.llama3Tokenizer) {
+                    loadingOverlay.querySelector('p').textContent = `Loading LLaMA 3...`;
+                    loadingOverlay.classList.remove('hidden');
+                    await new Promise(r => setTimeout(r, 50));
+                    loadingOverlay.classList.add('hidden');
+                }
+                updateVisualization();
+            } else if (!extraTokenizers[currentCompareValue]) {
+                loadingOverlay.querySelector('p').textContent = `Loading ${label}...`;
+                loadingOverlay.classList.remove('hidden');
+                
+                try {
+                    if (currentCompareValue === 'bert') {
+                        extraTokenizers[currentCompareValue] = await AutoTokenizer.from_pretrained('Xenova/bert-base-uncased');
+                    } else {
+                        let encodingId = currentCompareValue === 'gpt-4' ? 'cl100k_base' : 'p50k_base';
+                        extraTokenizers[currentCompareValue] = getEncoding(encodingId);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    loadingOverlay.innerHTML = `<p style="color: #ef4444;">Failed to load tokenizer.</p>`;
+                    return;
+                }
+                loadingOverlay.classList.add('hidden');
+                loadingOverlay.querySelector('p').textContent = 'Loading Vocabulary & Merges...';
+                updateVisualization();
+            } else {
+                updateVisualization();
+            }
+        });
+    });
+
     function updateVisualization() {
         if (!tokenizer.isLoaded) return;
         
@@ -108,20 +179,63 @@ document.addEventListener('DOMContentLoaded', async () => {
             tokenIds.innerHTML = '';
             charCount.textContent = '0';
             tokenCount.textContent = '0';
+            
+            if (currentCompareValue !== 'none') {
+                compareTokenViz.innerHTML = '';
+                compareTokenCount.textContent = '0';
+            }
             return;
         }
 
+        // Render main ddtokens
         const tokens = tokenizer.encode(text);
+        const tokensToRender = tokens.map(t => ({ id: t.id, string: t.string }));
         
-        // Update stats
         charCount.textContent = text.length.toLocaleString();
-        tokenCount.textContent = tokens.length.toLocaleString();
+        tokenCount.textContent = tokensToRender.length.toLocaleString();
         
-        // Render visualization
-        renderTokens(tokens);
+        renderTokens(tokensToRender, true, tokenViz, tokenIds);
+        
+        // Render comparison if active
+        if (currentCompareValue !== 'none') {
+            let compareTokensToRender = [];
+            
+            if (currentCompareValue === 'llama-3' && window.llama3Tokenizer) {
+                const encodedIds = window.llama3Tokenizer.encode(text);
+                compareTokensToRender = encodedIds.map(id => {
+                    let str = window.llama3Tokenizer.decode([id]);
+                    return { id: id, string: str };
+                });
+            } else if (extraTokenizers[currentCompareValue]) {
+                const extraTok = extraTokenizers[currentCompareValue];
+                
+                if (currentCompareValue === 'bert') {
+                    const encoded = extraTok(text);
+                    const ids = Array.from(encoded.input_ids.data);
+                    compareTokensToRender = ids.map(id => {
+                        let str = extraTok.decode([id]);
+                        return { id: id, string: str };
+                    });
+                } else {
+                    const encodedIds = extraTok.encode(text);
+                    compareTokensToRender = encodedIds.map(id => {
+                        let str = '';
+                        try {
+                            str = new TextDecoder('utf-8', { fatal: false }).decode(extraTok.decodeSingleTokenBytes(id));
+                        } catch(e) {
+                            str = extraTok.decode([id]);
+                        }
+                        return { id: id, string: str };
+                    });
+                }
+            }
+            
+            compareTokenCount.textContent = compareTokensToRender.length.toLocaleString();
+            renderTokens(compareTokensToRender, false, compareTokenViz, null);
+        }
     }
 
-    function renderTokens(tokens) {
+    function renderTokens(tokens, showIds = true, targetViz, targetIds) {
         // We use a DocumentFragment for performance
         const vizFragment = document.createDocumentFragment();
         const idsFragment = document.createDocumentFragment();
@@ -142,39 +256,43 @@ document.addEventListener('DOMContentLoaded', async () => {
             textSpan.textContent = displayStr;
             vizFragment.appendChild(textSpan);
             
-            // ID chip
-            const idChip = document.createElement('div');
-            idChip.className = 'token-id-chip';
-            idChip.textContent = token.id !== -1 ? token.id : `?`;
-            
-            // Add hover effects linking chip and text span
-            idChip.addEventListener('mouseenter', () => {
-                textSpan.style.filter = 'brightness(1.5) contrast(1.2)';
-                idChip.style.backgroundColor = `var(--token-color-${colorIndex})`;
-                idChip.style.color = '#fff';
-            });
-            idChip.addEventListener('mouseleave', () => {
-                textSpan.style.filter = '';
-                idChip.style.backgroundColor = '';
-                idChip.style.color = '';
-            });
-            
-            textSpan.addEventListener('mouseenter', () => {
-                idChip.style.backgroundColor = `var(--token-color-${colorIndex})`;
-                idChip.style.color = '#fff';
-            });
-            textSpan.addEventListener('mouseleave', () => {
-                idChip.style.backgroundColor = '';
-                idChip.style.color = '';
-            });
-            
-            idsFragment.appendChild(idChip);
+            if (showIds) {
+                // ID chip
+                const idChip = document.createElement('div');
+                idChip.className = 'token-id-chip';
+                idChip.textContent = token.id !== -1 ? token.id : `?`;
+                
+                // Add hover effects linking chip and text span
+                idChip.addEventListener('mouseenter', () => {
+                    textSpan.style.filter = 'brightness(1.5) contrast(1.2)';
+                    idChip.style.backgroundColor = `var(--token-color-${colorIndex})`;
+                    idChip.style.color = '#fff';
+                });
+                idChip.addEventListener('mouseleave', () => {
+                    textSpan.style.filter = '';
+                    idChip.style.backgroundColor = '';
+                    idChip.style.color = '';
+                });
+                
+                textSpan.addEventListener('mouseenter', () => {
+                    idChip.style.backgroundColor = `var(--token-color-${colorIndex})`;
+                    idChip.style.color = '#fff';
+                });
+                textSpan.addEventListener('mouseleave', () => {
+                    idChip.style.backgroundColor = '';
+                    idChip.style.color = '';
+                });
+                
+                idsFragment.appendChild(idChip);
+            }
         });
         
-        tokenViz.innerHTML = '';
-        tokenViz.appendChild(vizFragment);
+        targetViz.innerHTML = '';
+        targetViz.appendChild(vizFragment);
         
-        tokenIds.innerHTML = '';
-        tokenIds.appendChild(idsFragment);
+        if (showIds && targetIds) {
+            targetIds.innerHTML = '';
+            targetIds.appendChild(idsFragment);
+        }
     }
 });
