@@ -143,7 +143,21 @@ textarea::placeholder {
     white-space: pre-wrap;
     word-break: break-all;
     overflow-y: auto;
+}
+
+.resizer {
+    height: 6px;
+    background-color: var(--panel-bg);
+    border-top: 1px solid var(--panel-border);
     border-bottom: 1px solid var(--panel-border);
+    cursor: row-resize;
+    transition: background-color 0.2s, border-color 0.2s;
+    flex-shrink: 0;
+}
+
+.resizer:hover, .resizer.resizing {
+    background-color: var(--accent);
+    border-color: var(--accent);
 }
 
 .token-span {
