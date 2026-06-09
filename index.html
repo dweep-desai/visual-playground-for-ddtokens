@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ddtokens Visual Playground</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                <h1>ddtokens Playground</h1>
+            </div>
+            <div class="header-actions">
+                <button id="clear-btn" class="btn">Clear</button>
+            </div>
+        </header>
+        
+        <main>
+            <div class="loading-overlay" id="loading-overlay">
+                <div class="spinner"></div>
+                <p>Loading Vocabulary & Merges...</p>
+            </div>
+            
+            <div class="workspace">
+                <div class="panel input-panel">
+                    <textarea id="text-input" placeholder="Type some text here to see how it's tokenized..."></textarea>
+                </div>
+                
+                <div class="panel output-panel">
+                    <div id="token-visualization" class="token-viz"></div>
+                    <div class="token-list-container">
+                        <h3>Token IDs</h3>
+                        <div id="token-ids" class="token-ids-list"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-bar">
+                <div class="stat">
+                    <span class="stat-label">Characters</span>
+                    <span class="stat-value" id="char-count">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Tokens</span>
+                    <span class="stat-value" id="token-count">0</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="tokenizer.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
