@@ -9,21 +9,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sampleBtn = document.getElementById('sample-btn');
 
     const sampleTexts = [
-        "Exploring the vast universe, one small step at a time.",
-        "The silent night was broken by a sudden, loud thunder.",
-        "She quickly typed the complex code into the terminal.",
-        "A gentle breeze whispered through the ancient oak trees.",
-        "Mountains stood tall against the vibrant sunset sky.",
-        "He sipped his hot coffee while watching the morning rain.",
-        "The clever fox outsmarted the hounds with a quick dash.",
-        "Robots are learning to perform intricate surgical tasks.",
-        "Music has the power to heal the soul and uplift spirits.",
-        "A mysterious shadow moved gracefully across the dark alley.",
-        "The old clock chimed exactly at midnight, echoing loudly.",
-        "They discovered a hidden treasure buried beneath the sand.",
-        "The sparkling stars guided the lost sailors back home.",
-        "Reading a good book can transport you to another world.",
-        "Freshly baked bread filled the room with a delightful aroma."
+        "Hello world! 👋 Welcome to 2024.\nHere is a random number: 12345.\n    Let's see how this is tokenized!",
+        "User 909 says:\n\"This UI is 🔥!\"\nWhat do you think about adding 5 more emojis? 🤔 Let me know ASAP! ✨",
+        "Data block A7X:\nValue 1: $450.99\nValue 2: €120.00\n  --> Proceeding with transaction... 🚀 Success! 🎉",
+        "Line 1...\n\nLine 3 after a blank! 😲\nCan it handle 4 spaces?    Yes, it can. Numbers like 3.14159 too! 🥧",
+        "Error 404: Not Found 🚨\nPlease check the URL and try again. 🔄\nContact admin at 1-800-555-0199 for help.",
+        "Task List 📋:\n1. Buy 3 apples 🍎\n2. Call Mom at 5:00 PM 📞\n3. Walk the dog 🐕\n  Done with all 3 tasks!",
+        "Coordinates: 34.0522° N, 118.2437° W 📍\nLos Angeles, CA.\nPopulation: ~3.8 million 🏙️\nWeather: 72°F ☀️",
+        "Code snippet:\n```js\nconst x = 42; 🧑‍💻\nconsole.log(\"Result:\", x * 2);\n```\nDoes this run properly? 🤔",
+        "Flight BA249 ✈️ departs at 14:30.\nGate: 12B.\nPassenger: John Doe (ID: 987654321).\nHave a safe trip! 🌍",
+        "Recipe for 🥞:\n- 2 cups flour\n- 1 cup milk 🥛\n- 3 eggs 🥚\nMix well and cook at 350°F for 10 mins. Enjoy!",
+        "Invoice #77891 📄\nDate: 2026-06-09\nTotal: $1,250.50 💰\nStatus: PAID ✅\nThank you for your business! 🙏",
+        "Event: Team Sync 📅\nTime: 10:00 AM - 11:30 AM.\nLocation: Room 4B 🏢\nAttendees: 8 people.\nBring coffee ☕!",
+        "Temperature reads 98.6°F 🌡️.\nHeart rate: 72 bpm 💓.\nBlood pressure: 120/80.\nPatient is stable. 🏥👨‍⚕️",
+        "The quick brown fox 🦊 jumps over 13 lazy dogs 🐶!\nWhat a crazy sight at 2:45 PM on a Tuesday. 🤯✨",
+        "System Update ⚙️:\nVersion 10.4.2 installed.\nRestarting in 5... 4... 3... 2... 1... 💥\nSystem is UP! 🟢"
     ];
 
     // Initialize Tokenizer
